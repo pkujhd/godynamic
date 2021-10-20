@@ -1,0 +1,48 @@
+name: godynamic Testing
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:    
+  build:
+    env:
+      GOPATH: ${{ github.workspace }}
+      GO111MODULE: auto
+    strategy:
+      fail-fast: false
+      matrix:
+        go-version: [1.8.x, 1.9.x, 1.10.x, 1.11.x, 1.12.x, 1.13.x, 1.14.x, 1.15.x, 1.16.x]
+        os:  [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: ${{ matrix.go-version }}
+        
+    - name: instal libstd.so
+      run:         
+        go install -buildmode=shared std
+        
+    - name: Checkout code
+      uses: actions/checkout@v2
+      with:
+        path: ${{ env.GOPATH }}/src/github.com/${{ github.repository }}
+      
+    - name: Build
+      run:
+        go build -linkshared -v github.com/pkujhd/godynamic/examples/loader
+        
+    - name: Compile base.go
+      shell: sh
+      run:
+        go install -v -buildmode=shared -linkshared github.com/pkujhd/godynamic/examples/ubase
+        
+    - name: Test base.o
+      run: 
+        ./loader -l $GOPATH/pkg/linux_`go env GOARCH`_dynlink/libgithub.com-pkujhd-godynamic-examples-ubase.so -p github.com/pkujhd/godynamic/examples/ubase.so -r github.com/pkujhd/godynamic/examples/ubase.Enter
+        
