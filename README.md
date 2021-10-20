@@ -37,5 +37,6 @@ go install -v -buildmode=shared -linkshared github.com/pkujhd/godynamic/examples
 
 ## Warning
 golang buildmode(-buildmode=shared) will be not support after golang 1.18
+
 This has currently only been tested and developed on:
 Golang 1.10-1.16 (x64/x86, linux)
