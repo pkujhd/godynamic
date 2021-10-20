@@ -1,6 +1,8 @@
 
 # GoDynamic
 
+![Build Status](https://github.com/pkujhd/godynamic/workflows/godynamic%20Testing/badge.svg)
+
 GoDynamic can load and run Golang dynamic library compiled by -buildmode=shared -linkshared
 
 ## How does it work?
