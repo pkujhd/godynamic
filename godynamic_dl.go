@@ -153,8 +153,9 @@ func openplugin(name, libpath string) (*Dynamiclib, error) {
 
 func lookup(p *Dynamiclib, symName string) (unsafe.Pointer, error) {
 	var cErr *C.char
-	name := make([]byte, len(symName)+1)
-	copy(name, symName)
+	newName := getSymbolName(symName)
+	name := make([]byte, len(newName)+1)
+	copy(name, newName)
 	ptr := C.pluginLookup(C.ulong(p.h), (*C.char)(unsafe.Pointer(&name[0])), &cErr)
 	if ptr != nil {
 		return ptr, nil
